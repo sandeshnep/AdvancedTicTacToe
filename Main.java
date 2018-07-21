@@ -8,20 +8,20 @@ public class Main {
 	static String input = "n/a";
 	static int usersign = 0;
 	static int counter;
-	static 
+	static
 	ArrayList<Node> boards = new ArrayList<Node>(); //for 9x9
 	static int counter2=0;
 
-	
-	
+
+
 //........................................Some Crucial Functions:.....................................................................
-	
+
 
 //.......................................Checks For Terminal States AND returns Utility Value.........................................
-		//true translates to following: 0 if draw, terminal.  and 1 if x wins and -1 if o wins. 
+		//true translates to following: 0 if draw, terminal.  and 1 if x wins and -1 if o wins.
 	    //false translates to 2, it is NOT terminal and NOT goal state
 	static boolean terminal(Node n){
-			
+
 			int[] cases = new int[8];
 			cases[0] = n.pos[0] + n.pos[1] + n.pos[2]; //Case1, positions 0,1,2
 			cases[1] = n.pos[3] + n.pos[4] + n.pos[5]; //Case2, positions 3,4,5
@@ -31,7 +31,7 @@ public class Main {
 			cases[5] = n.pos[2] + n.pos[5] + n.pos[8]; //Case6, positions 2,5,8
 			cases[6] = n.pos[0] + n.pos[4] + n.pos[8]; //Case7, positions 0,4,8
 			cases[7] = n.pos[2] + n.pos[4] + n.pos[6]; //case8, positions 2,4,6
-			
+
 			for(int i = 0; i<8; i++){
 				if(cases[i]>= 3){
 					//System.err.println("Goal State reached, X wins.");
@@ -45,7 +45,7 @@ public class Main {
 						return true;
 					}
 			}
-			
+
 			//if no availaible spots
 			if((n.pos[0]!=0 && n.pos[1]!=0 && n.pos[2]!=0 && n.pos[3]!=0 && n.pos[4]!=0 && n.pos[5]!=0 && n.pos[6]!=0 && n.pos[7]!=0 && n.pos[8]!=0)){
 				//System.err.println("Terminal State reached, Draw");
@@ -53,14 +53,14 @@ public class Main {
 				return true;
 			}
 			else
-			return false;	
+			return false;
 		}
-			
+
 
 //.......................................Utility Function.....................................................
-	
+
 	static double Utility(Node n){
-		
+
 		int[] cases = new int[8];
 		cases[0] = n.pos[0] + n.pos[1] + n.pos[2]; //Case1, positions 0,1,2
 		cases[1] = n.pos[3] + n.pos[4] + n.pos[5]; //Case2, positions 3,4,5
@@ -70,7 +70,7 @@ public class Main {
 		cases[5] = n.pos[2] + n.pos[5] + n.pos[8]; //Case6, positions 2,5,8
 		cases[6] = n.pos[0] + n.pos[4] + n.pos[8]; //Case7, positions 0,4,8
 		cases[7] = n.pos[2] + n.pos[4] + n.pos[6]; //case8, positions 2,4,6
-		
+
 		for(int i = 0; i<8; i++){
 			if(cases[i]>= 3){
 				//System.err.println("Goal State reached, X wins.");
@@ -81,40 +81,48 @@ public class Main {
 					//System.err.println("Goal State reached, O wins.");
 					return -1.00;
 				}
-		}	
-		
-		return 0;	
+		}
+
+		return 0;
 	}
 
-	
+
 //.......................................Print Nodes (States)...............................................................................
 		static Node printNode(Node n, boolean nine){
 			//Prints the current State
 			String xo = "J";
+			System.err.println();
 			for(int i = 0; i<9; i++){
-				
-				System.err.print((i+1) + ":" + n.pos[i] + " |");
+
+				if(i==0||i==3 || i==6){
+					System.err.println();
+				}
+				if(n.pos[i]==1){
+					System.err.print(" X ");
+				}
+				else if (n.pos[i]==-1){
+					System.err.print(" O ");
+				}
+				else if (n.pos[i]==0){
+					System.err.print(" _ ");
+				}
+
+
 			}
-			
-			if(nine == false){
-			    System.err.print(" Turn : " + n.turn + "   ");
-			    System.err.print("| PathCost : " + n.pathCost + "   ");
-			    System.err.println();
+
+			 return n;
 			}
-			    
-			 return n;   
-			}
-		
-		
+
+
 //......................................Generate Children States....................................................
-		
+
 	static ArrayList<Node> makeChildren(Node n){
 		counter++;
 		ArrayList<Node> children = new ArrayList<Node>();
 		if(terminal(n)==true){
 			return null;
 		}
-	
+
 		for(int i = 0; i<9; i++){
 			if(n.pos[i] == 0){
 				//counter++;
@@ -127,49 +135,49 @@ public class Main {
 				children.add(child);
 			}
 		}
-		
-		return children;
-		
-	}
-	
 
-	
-			
+		return children;
+
+	}
+
+
+
+
 //.....................................Implementation of the MiniMax algorithm.......................................
 
 	public static double MiniMax(Node n){
 		counter++;
 		ArrayList<Node> children = makeChildren(n);
-		
+
 		if(terminal(n) == true){
 			return Utility(n);
 		}
-		
+
 		if(n.turn==1){//Maximizing
 				double bestVal = -1000;
 				for(int i = 0; i<children.size(); i++){
 					double val = MiniMax(children.get(i));
 					bestVal = max(bestVal, val);
 				}
-				
+
 				return bestVal;
 			}
-		
-		else 
+
+		else
 			if(n.turn==-1){//Minimizing
 				double bestVal = 1000;
 				for(int i = 0; i<children.size(); i++){
 					double val = MiniMax(children.get(i));
 					bestVal = min(bestVal, val);
 				}
-				
+
 				return bestVal;
 			}
 		return 0;
 	}
-	
-	
-	
+
+
+
 	public static double max(double bestVal, double val) {
 		if(val>bestVal){
 			return val;
@@ -184,47 +192,47 @@ public class Main {
 		else
 			return bestVal;
 	}
-	
-	
-	
+
+
+
 
 //.............................................Implementing alpha beta pruning for 3x3 to see if it works................................
-	
-	
+
+
 	public static double alphabeta3(Node n, double alpha, double beta){
 		counter++;
 		if(terminal(n)==true ){
 			return Utility(n);
 		}
-		
+
 		ArrayList<Node> children = new ArrayList<Node>();
 		children = makeChildren(n);
-		
+
 		if(n.turn==1){//Maximizing
 			double v = -1000;
 			for(int i = 0; i<children.size(); i++){
 				double val = alphabeta3(children.get(i), alpha, beta);
 				v = max(v, val);
-				
+
 				alpha = max(alpha, v);
-				
+
 				if(beta <= alpha ){
 					break;
 				}
 
 			}
-			
+
 			return v;
 		}
-		else 
+		else
 			if(n.turn==-1){//Minimizing
 				double v = 1000;
 				for(int i = 0; i<children.size(); i++){
 					double val = alphabeta3(children.get(i), alpha, beta);
 					v = min(v, val);
-					
+
 					beta = min(beta, v);
-					
+
 					if(beta <= alpha){
 						break;
 					}
@@ -234,10 +242,10 @@ public class Main {
 		return 0;
 
 	}
-		
-	
-	
-	
+
+
+
+
 //.................................................AI RESPONSE...............................................
 	public static Node aiResponse(Node n){
 		ArrayList<Node> childr = makeChildren(n);
@@ -249,13 +257,13 @@ public class Main {
 					//childr.get(i).utility = MiniMax(childr.get(i));
 					childr.get(i).utility = alphabeta3(childr.get(i), -1000, 1000);
 			}
-			
+
 			for(int i = 0; i<childr.size(); i++){
 					if(childr.get(i).utility>result.utility){
 						result = childr.get(i);
 					}
 			}
-			
+
 		}
 			else if(n.turn==-1) {//minimizing
 				result.utility = 1000;
@@ -263,45 +271,45 @@ public class Main {
 					//childr.get(i).utility = MiniMax(childr.get(i));
 					childr.get(i).utility = alphabeta3(childr.get(i), -1000, 1000);
 			}
-			
+
 			for(int i = 0; i<childr.size(); i++){
 					if(childr.get(i).utility<result.utility){
 						result = childr.get(i);
 					}
 			}
 		}
-		
-		
+
+
 		return result;
 	}
 
 //.......................................Compares children node with parent node and returns a number..............................................................................................
-	
+
 	public static int getMove(Node n){
-		
+
 		int diff = 0;
 		for(int i = 0; i<9; i++){
-			
+
 			if(n.pos[i]!=n.parentNode.pos[i]){
 				diff = i+1;
 			}
 		}
 		return diff;
 	}
-	
-	
-	
-	
+
+
+
+
 //.......................................USER TURN.................................................................................................................................................
 	public static Node userResponse(Node n){
-		
+
 		boolean invalid = true;
-		
+
 		while(invalid==true){
 			System.err.println();
 			System.err.println("Enter an integer 1-9" );
 			int integer = scanner.nextInt();
-				
+
 			if(integer>=1 && integer<=9 && n.pos[integer-1]==0){
 				n.pos[integer-1]=usersign;
 				n.turn = -1*usersign;
@@ -310,13 +318,13 @@ public class Main {
 			else{
 				System.err.println("Invalid. Try again.");}
 			}
-	
+
 		return n;
 	}
 
-	
+
 //......................................3X3 tic tac toe...........................................................
-	
+
 	public static void threebthree(){
 		//initial greetings
 		while ((input.equals("x")== false && input.equals("X")==false)  && (input.equals("o")==false && input.equals("O")==false)){
@@ -328,23 +336,23 @@ public class Main {
 			}
 			else
 				usersign = -1;
-			
-			
-			
+
+
+
 		//Starts the new game, fills up the positions as "0", meaning empty.
 			Node currentNode = new Node();
 			for(int i = 0; i<9; i++){
 				currentNode.pos[i] = 0;
 			}
-			
+
 			//x goes first
 			if(usersign==1){ //user is x
-				
+
 				while(terminal(currentNode)==false){
 					Node userchoice = new Node();
 					userchoice = userResponse(currentNode);
 					printNode(userchoice, false);
-					
+
 					if(terminal(userchoice)==true && Utility(userchoice)==1){
 						System.err.println("X wins");
 						break;
@@ -354,19 +362,19 @@ public class Main {
 							System.err.println("O wins");
 							break;
 						}
-						else 
+						else
 							if(terminal(userchoice)==true && Utility(userchoice)==0){
 								System.err.println("It's a Draw!");
 								break;
 							}
-					
+
 					currentNode = aiResponse(userchoice);
 					printNode(currentNode, false);
-					System.err.println("Numbers of nodes expanded : " + counter);
+					System.err.println("\nNumbers of nodes expanded : " + counter);
 					System.out.println(getMove(currentNode));
-					
-					
-									
+
+
+
 					if(terminal(currentNode)==true && Utility(currentNode)==1){
 						System.err.println("X wins");
 						break;
@@ -376,26 +384,26 @@ public class Main {
 							System.err.println("O wins");
 							break;
 						}
-						else 
+						else
 							if(terminal(currentNode)==true && Utility(currentNode)==0){
 								System.err.println("It's a Draw!");
 								break;
 							}
 				}
-				
+
 			}
 			else
 				if(usersign==-1){ //ai is x
 					currentNode.turn = 1;
 					while(terminal(currentNode)==false){
-						
+
 						Node aichoice = new Node();
 						aichoice = aiResponse(currentNode);
 						printNode(aichoice, false);
 						System.err.println("Numbers of nodes expanded : " + counter);
 						System.out.println(getMove(aichoice));
-						
-						
+
+
 						if(terminal(aichoice)==true && Utility(aichoice)==1){
 							System.err.println("X wins");
 							break;
@@ -405,16 +413,16 @@ public class Main {
 								System.err.println("O wins");
 								break;
 							}
-							else 
+							else
 								if(terminal(aichoice)==true && Utility(aichoice)==0){
 									System.err.println("It's a Draw!");
 									break;
 								}
-						
+
 						currentNode = userResponse(aichoice);
 						printNode(currentNode, false);
-						
-				
+
+
 						if(terminal(currentNode)==true && Utility(currentNode)==1){
 							System.err.println("X wins");
 							break;
@@ -424,23 +432,23 @@ public class Main {
 								System.err.println("O wins");
 								break;
 							}
-							else 
+							else
 								if(terminal(currentNode)==true && Utility(currentNode)==0){
 									System.err.println("It's a Draw!");
 									break;
 								}
 					}
-					
+
 				}
 	}
-	
 
-					
-	
+
+
+
 //.....................................Main Method....................................................................................................
 	public static void main(String[] args) {
 		int v = 3;
-		
+
 		while(v!=1 || v!=2){
 		System.err.println("Welcome to tic tac toe. Enter 1 to play tic tac toe. Enter 2 to play 9-board Tic tac toe.");
 		v = scanner.nextInt();
@@ -453,9 +461,8 @@ public class Main {
 				//ai9b9.testTerminal();
 				//ai9b9.testChildren();
 			}
-		}	
-		
+		}
+
 	}
-		
+
  }
-	
